@@ -69,8 +69,51 @@
       ]
     },
     {
-      "name": "Histoire",
-      "questions": []
+      "name": "Records météorologique",
+      "questions": [
+        {
+          "question": "Quelle est le record de température en France ?",
+          "answers": [
+            {
+              "text": "44°C",
+              "isCorrect": false
+            },
+            {
+              "text": "45°C",
+              "isCorrect": false
+            },
+            {
+              "text": "46°C",
+              "isCorrect": true
+            },
+            {
+              "text": "47°C",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "question": "Quelle est le record de température en Grèce ?",
+          "answers": [
+            {
+              "text": "14°C",
+              "isCorrect": false
+            },
+            {
+              "text": "42°C",
+              "isCorrect": false
+            },
+            {
+              "text": "67°C",
+              "isCorrect": false
+            },
+            {
+              "text": "48°C",
+              "isCorrect": true
+            }
+          ]
+        }
+      ]
     },
     {
       "name": "Sciences",
