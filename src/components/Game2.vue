@@ -1,33 +1,3 @@
-<template>
-  <v-container class="text-center">
-    <v-row justify="center" class="mt-5">
-      <v-btn @click="toggleTimer">{{ isRunning ? 'Pause' : 'Start' }}</v-btn>
-      <v-btn @click="invertNumbers" class="ml-2">Inverser</v-btn>
-      <v-btn @click="swapCurrentPosition" class="ml-2">Changer côté</v-btn>
-    </v-row>
-
-    <v-row justify="space-around" class="mt-5">
-      <div class="player">
-        <h3>Joueur 1</h3>
-        <p>Score: {{ scores.player1 }}</p>
-        <v-btn @click="addScore('player1')">Correct</v-btn>
-      </div>
-      <div class="player">
-        <h3>Joueur 2</h3>
-        <p>Score: {{ scores.player2 }}</p>
-        <v-btn @click="addScore('player2')">Correct</v-btn>
-      </div>
-    </v-row>
-
-    <v-row justify="center" class="mt-5 align-center flex-column">
-      <div v-for="(num, index) in numbers" :key="num" :class="['hexagon', getPositionClass(num)]"
-        :style="{ background: `linear-gradient(to top, rgb(255, 165, 0) ${progress[index]}%, rgb(209, 186, 146) ${progress[index]}%)` }">
-        {{ num }}
-      </div>
-    </v-row>
-  </v-container>
-</template>
-
 <script lang="ts" setup>
 import { ref, onUnmounted } from 'vue';
 
@@ -76,11 +46,39 @@ const getPositionClass = (num: number) => {
 const addScore = (player: 'player1' | 'player2') => {
   scores.value[player] += numbers.value[activeIndex];
 };
-
-onUnmounted(() => {
-  if (timer) clearInterval(timer);
-});
 </script>
+
+
+<template>
+  <v-container class="text-center">
+    <v-row justify="center" class="mt-5">
+      <v-btn @click="toggleTimer">{{ isRunning ? 'Pause' : 'Start' }}</v-btn>
+      <v-btn @click="invertNumbers" class="ml-2">Inverser</v-btn>
+      <v-btn @click="swapCurrentPosition" class="ml-2">Changer côté</v-btn>
+    </v-row>
+
+    <v-row justify="space-around" class="mt-5">
+      <div class="player">
+        <h3>Joueur 1</h3>
+        <p>Score: {{ scores.player1 }}</p>
+        <v-btn @click="addScore('player1')">Correct</v-btn>
+      </div>
+      <div class="player">
+        <h3>Joueur 2</h3>
+        <p>Score: {{ scores.player2 }}</p>
+        <v-btn @click="addScore('player2')">Correct</v-btn>
+      </div>
+    </v-row>
+
+    <v-row justify="center" class="mt-5 align-center flex-column">
+      <div v-for="(num, index) in numbers" :key="num" :class="['hexagon', getPositionClass(num)]"
+        :style="{ background: `linear-gradient(to top, rgb(255, 165, 0) ${progress[index]}%, rgb(209, 186, 146) ${progress[index]}%)` }">
+        {{ num }}
+      </div>
+    </v-row>
+  </v-container>
+</template>
+
 
 <style>
 .hexagon {

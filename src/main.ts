@@ -8,6 +8,7 @@ import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import router from './router/router'
+import { VNumberInput } from 'vuetify/labs/VNumberInput'
 
 const vuetify = createVuetify({
   icons: {
@@ -16,7 +17,10 @@ const vuetify = createVuetify({
   theme: {
     defaultTheme: 'dark',
   },
-  components,
+  components : {
+    VNumberInput,
+    ...components,
+  },
   directives,
 })
 

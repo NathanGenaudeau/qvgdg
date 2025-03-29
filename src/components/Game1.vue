@@ -2,38 +2,16 @@
 import { ref } from 'vue';
 import { VueDraggableNext } from "vue-draggable-next";
 
+import { Player } from '../types/Player';
+import type { Theme } from '../types/Theme';
+import type { Answer } from '../types/Answer';
 import Themes from '../assets/themes.json';
 
-interface Answer {
-  text: string;
-  isCorrect: boolean;
-}
-
-interface Question {
-  question: string;
-  answers: Answer[];
-}
-
-interface Theme {
-  name: string;
-  questions: Question[];
-}
-
-interface Player {
-  name: string;
-  theme1: Theme[];
-  theme2: Theme[];
-  isEditing: boolean;
-}
+const emit = defineEmits(['openNavigationDrawer']);
 
 const themes = ref<Theme[]>(Themes.themes);
 
-const players = ref<Player[]>([
-  { name: "Camille", theme1: [], theme2: [], isEditing: false },
-  { name: "Loïc", theme1: [], theme2: [], isEditing: false },
-  { name: "Martial", theme1: [], theme2: [], isEditing: false },
-  { name: "Nathan", theme1: [], theme2: [], isEditing: false },
-]);
+const players = ref<Player[]>(localStorage.getItem('players') ? JSON.parse(localStorage.getItem('players')!).filter((player: Player) => player.isVisible) : []);
 
 const colors = <string[]>['red', 'light-blue', 'green', 'indigo'].sort(() => Math.random() - 0.5);
 
@@ -54,11 +32,18 @@ const openTheme = (player: Player, theme: Theme) => {
   currentTheme.value = theme;
 };
 
+const deleteTheme = (player: Player, theme: Theme) =>  {
+  if (player.theme1[0] === theme) player.theme1 = [];
+  if (player.theme2[0] === theme) player.theme2 = [];
+  themes.value.push(theme);
+}
 
 // Affiche la bonne réponse si la réponse est fausse
 const verifyAnswer = (answer: Answer) => {
   selectedAnswer.value = answer;
+  if (answer.isCorrect && currentPlayer.value) currentPlayer.value.score += 2;
   Array.from(document.getElementsByClassName('answer-btn')).forEach((btn: any, index: number) => {
+
     if (currentTheme.value?.questions[currentQuestion.value].answers[index].isCorrect) {
       btn.classList.add('good');
     }
@@ -73,6 +58,14 @@ const nextQuestion = () => {
     btn.classList.remove('good');
     btn.classList.remove('bad');
   });
+
+  if (currentTheme.value && currentPlayer.value?.score && currentQuestion.value === currentTheme.value.questions.length) {
+    currentQuestion.value = 0;
+    dialog.value = false;
+    const index = players.value.findIndex(p => p === currentPlayer.value);
+    players.value[index].score = currentPlayer.value.score;
+    localStorage.setItem('players', JSON.stringify(players.value));
+  }
 };
 </script>
 
@@ -81,9 +74,11 @@ const nextQuestion = () => {
     <v-row>
       <v-col v-for="(player, index) in players" :key="index" cols="3">
         <v-card class="pa-4">
-          <v-avatar class="avatar-candidate" size="xx-large" :icon="`mdi-alpha-${player.name.charAt(0).toLowerCase()}-circle`" :color="colors[index]"/>
+          <v-avatar class="player-avatar" size="xx-large" :icon="`mdi-alpha-${player.name.charAt(0).toLowerCase()}-circle`" :color="colors[index]"/>
           <v-card-title @dblclick="toggleEdit(player)">
-            <v-text-field
+            {{ player.name }}
+            <div>Score : {{ player.score }}</div>
+            <!--<v-text-field
               v-if="player.isEditing"
               v-model="player.name"
               @blur="toggleEdit(player)"
@@ -91,16 +86,16 @@ const nextQuestion = () => {
               variant="outlined"
               autofocus
             />
-            <span v-else>{{ player.name }}</span>
+            <span v-else>{{ player.name }}</span>-->
           </v-card-title>
 
-          <vue-draggable-next v-model="player.theme1" group="themes" :disabled="player.theme1[0]" class="theme-drop-zone mx-4">
-            <v-chip v-if="player.theme1[0]" class="theme" variant="flat" color="#212121" size="x-large">
+          <vue-draggable-next v-model="player.theme1" group="themes" :disabled="player.theme1.length" class="theme-drop-zone mx-4">
+            <v-chip v-if="player.theme1[0]" class="theme" variant="flat" color="#212121" size="x-large" closable @click:close="deleteTheme(player, player.theme1[0])">
               <h3 @click="openTheme(player, player.theme1[0])">{{ player.theme1[0]?.name }}</h3>
             </v-chip>
           </vue-draggable-next>
-          <vue-draggable-next v-model="player.theme2" group="themes" :disabled="player.theme2[0]" class="theme-drop-zone mx-4">
-            <v-chip v-if="player.theme2[0]" class="theme" variant="flat" color="#212121" size="x-large">
+          <vue-draggable-next v-model="player.theme2" group="themes" :disabled="player.theme2.length" class="theme-drop-zone mx-4">
+            <v-chip v-if="player.theme2[0]" class="theme" variant="flat" color="#212121" size="x-large" closable @click:close="deleteTheme(player, player.theme2[0])">
               <h3 @click="openTheme(player, player.theme2[0])">{{ player.theme2[0]?.name }}</h3>
             </v-chip>
           </vue-draggable-next>
@@ -131,8 +126,8 @@ const nextQuestion = () => {
           @click="dialog = false"
         ></v-btn>
         <v-toolbar-title>
-          <v-avatar :icon="`mdi-alpha-${currentPlayer?.name.charAt(0).toLowerCase()}-circle`"/> : 
-          <span>{{ currentTheme?.name }}</span>
+          <v-avatar :icon="`mdi-alpha-${currentPlayer?.name.charAt(0).toLowerCase()}-circle`"/> : {{ currentTheme?.name }}
+          - score : {{  currentPlayer?.score }}
         </v-toolbar-title>
       </v-toolbar>
 
@@ -156,7 +151,7 @@ const nextQuestion = () => {
       </v-container>
 
       <v-container class="d-flex justify-end align-end">
-        <v-btn v-if="selectedAnswer" @click="currentTheme && currentQuestion === currentTheme?.questions.length - 1 ? dialog = false : nextQuestion()" color="green" class="mb-8">
+        <v-btn v-if="selectedAnswer" @click="nextQuestion" color="green" class="mb-8">
           {{ currentTheme && currentQuestion === currentTheme?.questions.length - 1 ? 'Fin' : 'Suivante' }}
         </v-btn>
       </v-container>
@@ -178,7 +173,7 @@ const nextQuestion = () => {
   gap: 10px;
 }
 
-.avatar-candidate {
+.player-avatar {
   font-size: 150px;
 }
 
