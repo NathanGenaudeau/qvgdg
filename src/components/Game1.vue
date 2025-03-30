@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { VueDraggableNext } from "vue-draggable-next";
 
 import { Player } from '../types/Player';
@@ -9,11 +9,10 @@ import Themes from '../assets/themes.json';
 
 const emit = defineEmits(['openNavigationDrawer']);
 
-const themes = ref<Theme[]>(Themes.themes);
-
 const players = ref<Player[]>(localStorage.getItem('players') ? JSON.parse(localStorage.getItem('players')!).filter((player: Player) => player.isVisible) : []);
+const themes = ref<Theme[]>(Themes.themes.filter(t => !players.value.flatMap((p) => [...p.theme1, ...p.theme2]).some(theme => theme.name === t.name)));
 
-const colors = <string[]>['red', 'light-blue', 'green', 'indigo'].sort(() => Math.random() - 0.5);
+const colors = <string[]>['red-darken-4', 'light-blue', 'green', 'yellow-darken-4'].sort(() => Math.random() - 0.5);
 
 const toggleEdit = (player: Player) => {
   player.isEditing = !player.isEditing;
@@ -25,20 +24,33 @@ const currentPlayer = ref<Player | null>(null);
 const currentQuestion = ref(0);
 const selectedAnswer = ref<Answer | null>(null);
 
-// Ouvre une modale qui affiche les questions du thème sélectionné
+/**
+ * Fonction qui ouvre une modale et qui affiche les questions du thème sélectionné
+ * @param player 
+ * @param theme 
+ */
+// 
 const openTheme = (player: Player, theme: Theme) => {
   dialog.value = true;
   currentPlayer.value = player;
   currentTheme.value = theme;
 };
 
+/**
+ * Fonction qui supprime le thème d'un joueur
+ * @param player 
+ * @param theme 
+ */
 const deleteTheme = (player: Player, theme: Theme) =>  {
   if (player.theme1[0] === theme) player.theme1 = [];
   if (player.theme2[0] === theme) player.theme2 = [];
   themes.value.push(theme);
 }
 
-// Affiche la bonne réponse si la réponse est fausse
+/**
+ * Fonction qui affiche la bonne réponse si la réponse donnée est fausse
+ * @param answer 
+ */
 const verifyAnswer = (answer: Answer) => {
   selectedAnswer.value = answer;
   if (answer.isCorrect && currentPlayer.value) currentPlayer.value.score += 2;
@@ -50,7 +62,9 @@ const verifyAnswer = (answer: Answer) => {
   });
 };
 
-// Passe à la question suivante et réinitialise les classes de style des boutons
+/**
+ * Fonction qui passe à la question suivante et réinitialise les classes de style des boutons
+ */
 const nextQuestion = () => {
   currentQuestion.value++;
   selectedAnswer.value = null;
@@ -67,6 +81,10 @@ const nextQuestion = () => {
     localStorage.setItem('players', JSON.stringify(players.value));
   }
 };
+
+watch(players, (newPlayers: Player[]) => {
+  localStorage.setItem('players', JSON.stringify(newPlayers));
+}, { deep: true });
 </script>
 
 <template>
@@ -76,17 +94,8 @@ const nextQuestion = () => {
         <v-card class="pa-4">
           <v-avatar class="player-avatar" size="xx-large" :icon="`mdi-alpha-${player.name.charAt(0).toLowerCase()}-circle`" :color="colors[index]"/>
           <v-card-title @dblclick="toggleEdit(player)">
-            {{ player.name }}
-            <div>Score : {{ player.score }}</div>
-            <!--<v-text-field
-              v-if="player.isEditing"
-              v-model="player.name"
-              @blur="toggleEdit(player)"
-              density="compact"
-              variant="outlined"
-              autofocus
-            />
-            <span v-else>{{ player.name }}</span>-->
+            <div class="text-h3 font-weight-bold pt-1 pb-4">{{ player.name }}</div>
+            <v-chip size="x-large" color="indigo-darken-3" variant="flat" class="text-h5 font-weight-bold">Score : {{ player.score }}</v-chip>
           </v-card-title>
 
           <vue-draggable-next v-model="player.theme1" group="themes" :disabled="player.theme1.length" class="theme-drop-zone mx-4">
@@ -104,9 +113,9 @@ const nextQuestion = () => {
     </v-row>
 
     <v-row class="mt-16 justify-center">
-      <v-col cols="5">
+      <v-col cols="6">
         <vue-draggable-next v-model="themes" group="themes" class="theme-pool justify-center">
-          <v-chip v-for="(theme, index) in themes" :key="index" draggable variant="outlined" label class="ma-1" size="x-large">
+          <v-chip v-for="(theme, index) in themes" :key="index" draggable variant="outlined" label class="ma-1 font-weight-bold" size="x-large">
             {{ theme.name }}
           </v-chip>
         </vue-draggable-next>
@@ -126,8 +135,9 @@ const nextQuestion = () => {
           @click="dialog = false"
         ></v-btn>
         <v-toolbar-title>
-          <v-avatar :icon="`mdi-alpha-${currentPlayer?.name.charAt(0).toLowerCase()}-circle`"/> : {{ currentTheme?.name }}
-          - score : {{  currentPlayer?.score }}
+          <v-avatar :icon="`mdi-alpha-${currentPlayer?.name.charAt(0).toLowerCase()}-circle`" size="x-large" class="text-h4"/>
+          <v-chip size="x-large" color="green-darken-3" variant="flat" class="font-weight-bold mx-4">{{ currentTheme?.name }}</v-chip>
+          <v-chip size="x-large" color="indigo-darken-3" variant="flat" class="font-weight-bold">Score : {{ currentPlayer?.score }}</v-chip>
         </v-toolbar-title>
       </v-toolbar>
 
