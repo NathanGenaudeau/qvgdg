@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, onUnmounted } from 'vue';
+import { ref } from 'vue';
 
 const isRunning = ref(false);
 const numbers = ref([4, 3, 2, 1]);

@@ -56,7 +56,9 @@ watch(players, (newPlayers) => {
     <v-app-bar>
       <template v-slot:prepend>
         <v-btn icon="mdi mdi-home" @click="router.push('/')" />
+        <v-btn @click="router.push({ name: 'Manche 1' })">Manches 1 & 2</v-btn>
         <v-btn @click="router.push({ name: 'Sabotage' })">Sabotage</v-btn>
+        <v-btn @click="router.push({ name: '4 à la suite' })">4 à la suite</v-btn>
         <v-btn @click="router.push({ name: 'Finale' })">Finale</v-btn>
       </template>
       <template v-slot:append>
@@ -97,7 +99,7 @@ watch(players, (newPlayers) => {
         </v-list>
         <v-col>
           <v-text-field label="Nom du joueur" v-model="newPlayer"></v-text-field>
-          <v-btn @click="addPlayer" color="success" class="mt-2">Ajouter</v-btn>
+          <v-btn @click="addPlayer" color="#978a30" class="mt-2">Ajouter</v-btn>
         </v-col>
       </v-navigation-drawer>
     <v-main >

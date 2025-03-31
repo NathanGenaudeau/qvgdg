@@ -9,14 +9,10 @@ import Themes from '../assets/themes.json';
 
 const emit = defineEmits(['openNavigationDrawer']);
 
-const players = ref<Player[]>(localStorage.getItem('players') ? JSON.parse(localStorage.getItem('players')!).filter((player: Player) => player.isVisible) : []);
+const players = ref<Player[]>(localStorage.getItem('players') ? JSON.parse(localStorage.getItem('players')!) : []);
 const themes = ref<Theme[]>(Themes.themes.filter(t => !players.value.flatMap((p) => [...p.theme1, ...p.theme2]).some(theme => theme.name === t.name)));
 
-const colors = <string[]>['red-darken-4', 'light-blue', 'green', 'yellow-darken-4'].sort(() => Math.random() - 0.5);
-
-const toggleEdit = (player: Player) => {
-  player.isEditing = !player.isEditing;
-};
+const colors = ref<string[]>(['red-darken-4', 'light-blue', 'green', 'yellow-darken-4'].sort(() => Math.random() - 0.5));
 
 const dialog = ref(false);
 const currentTheme = ref<Theme | null>(null);
@@ -90,12 +86,12 @@ watch(players, (newPlayers: Player[]) => {
 <template>
   <v-container>
     <v-row>
-      <v-col v-for="(player, index) in players" :key="index" cols="3">
+      <v-col v-for="(player, index) in players.filter((player: Player) => player.isVisible)" :key="index" cols="3">
         <v-card class="pa-4">
           <v-avatar class="player-avatar" size="xx-large" :icon="`mdi-alpha-${player.name.charAt(0).toLowerCase()}-circle`" :color="colors[index]"/>
-          <v-card-title @dblclick="toggleEdit(player)">
-            <div class="text-h3 font-weight-bold pt-1 pb-4">{{ player.name }}</div>
-            <v-chip size="x-large" color="indigo-darken-3" variant="flat" class="text-h5 font-weight-bold">Score : {{ player.score }}</v-chip>
+          <v-card-title>
+            <div class="text-h4 font-weight-bold pt-1 pb-6">{{ player.name }}</div>
+            <v-chip size="x-large" color="indigo-darken-3" variant="flat" class="text-h4 font-weight-bold">Score : {{ player.score }}</v-chip>
           </v-card-title>
 
           <vue-draggable-next v-model="player.theme1" group="themes" :disabled="player.theme1.length" class="theme-drop-zone mx-4">
@@ -184,7 +180,7 @@ watch(players, (newPlayers: Player[]) => {
 }
 
 .player-avatar {
-  font-size: 150px;
+  font-size: 100px;
 }
 
 .theme {
