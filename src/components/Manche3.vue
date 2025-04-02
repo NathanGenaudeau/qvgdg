@@ -27,6 +27,7 @@ const selectedAnswer = ref<Answer | null>(null);
  */
 // 
 const openTheme = (player: Player, theme: Theme) => {
+  if (!theme.questions.length) return;
   dialog.value = true;
   currentPlayer.value = player;
   currentTheme.value = theme;
@@ -87,20 +88,20 @@ watch(players, (newPlayers: Player[]) => {
   <v-container>
     <v-row>
       <v-col v-for="(player, index) in players.filter((player: Player) => player.isVisible)" :key="index" cols="3">
-        <v-card class="pa-4">
+        <v-card class="pa-4" rounded="xl">
           <v-avatar class="player-avatar" size="xx-large" :icon="`mdi-alpha-${player.name.charAt(0).toLowerCase()}-circle`" :color="colors[index]"/>
           <v-card-title>
             <div class="text-h4 font-weight-bold pt-1 pb-6">{{ player.name }}</div>
-            <v-chip size="x-large" color="indigo-darken-3" variant="flat" class="text-h4 font-weight-bold">Score : {{ player.score }}</v-chip>
+            <v-chip size="x-large" color="indigo-darken-3" variant="flat" class="text-h4 font-weight-bold score">Score : {{ player.score }}</v-chip>
           </v-card-title>
 
-          <vue-draggable-next v-model="player.theme1" group="themes" :disabled="player.theme1.length" class="theme-drop-zone mx-4">
-            <v-chip v-if="player.theme1[0]" class="theme" variant="flat" color="#212121" size="x-large" closable @click:close="deleteTheme(player, player.theme1[0])">
+          <vue-draggable-next v-model="player.theme1" group="themes" :disabled="player.theme1.length" class="theme-drop-zone my-4">
+            <v-chip v-if="player.theme1[0]" class="theme" variant="flat" color="#212121" size="large" closable @click:close="deleteTheme(player, player.theme1[0])">
               <h3 @click="openTheme(player, player.theme1[0])">{{ player.theme1[0]?.name }}</h3>
             </v-chip>
           </vue-draggable-next>
-          <vue-draggable-next v-model="player.theme2" group="themes" :disabled="player.theme2.length" class="theme-drop-zone mx-4">
-            <v-chip v-if="player.theme2[0]" class="theme" variant="flat" color="#212121" size="x-large" closable @click:close="deleteTheme(player, player.theme2[0])">
+          <vue-draggable-next v-model="player.theme2" group="themes" :disabled="player.theme2.length" class="theme-drop-zone my-2">
+            <v-chip v-if="player.theme2[0]" class="theme" variant="flat" color="#212121" size="large" closable @click:close="deleteTheme(player, player.theme2[0])">
               <h3 @click="openTheme(player, player.theme2[0])">{{ player.theme2[0]?.name }}</h3>
             </v-chip>
           </vue-draggable-next>
@@ -108,14 +109,14 @@ watch(players, (newPlayers: Player[]) => {
       </v-col>
     </v-row>
 
-    <v-row class="mt-16 justify-center">
-      <v-col cols="6">
-        <vue-draggable-next v-model="themes" group="themes" class="theme-pool justify-center">
-          <v-chip v-for="(theme, index) in themes" :key="index" draggable variant="outlined" label class="ma-1 font-weight-bold" size="x-large">
+    <v-row class="mt-16 px-16 justify-center">
+      <vue-draggable-next v-model="themes" group="themes" class="theme-pool justify-center">
+        <v-col v-for="(theme, index) in themes" :key="index" cols="auto">
+          <v-chip draggable variant="outlined" label class="font-weight-bold" size="x-large">
             {{ theme.name }}
           </v-chip>
-        </vue-draggable-next>
-      </v-col>
+        </v-col>
+      </vue-draggable-next>
     </v-row>
   </v-container>
 
@@ -167,6 +168,9 @@ watch(players, (newPlayers: Player[]) => {
 
 <style scoped>
 .theme-drop-zone {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   min-height: 50px;
   border: 3px solid #ccc;
   border-radius: 5px;
@@ -180,8 +184,14 @@ watch(players, (newPlayers: Player[]) => {
 }
 
 .player-avatar {
-  font-size: 100px;
+  font-size: 80px;
 }
+
+.score {
+  padding: 30px;
+  border: 1px solid white;
+}
+
 
 .theme {
   cursor: pointer;

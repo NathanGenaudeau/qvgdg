@@ -24,13 +24,26 @@ watch(players, (newPlayers: Player[]) => {
   <v-container>
     <v-row>
       <v-col v-for="(player, index) in players.filter((player: Player) => player.isVisible)" :key="index">
-        <v-card class="pa-4">
+        <v-card class="pa-4" rounded="xl">
           <v-avatar class="player-avatar" size="xx-large" :icon="`mdi-alpha-${player.name.charAt(0).toLowerCase()}-circle`" :color="colors[index]"/>
           <v-card-title>
             <div class="text-h4 font-weight-bold pt-1 pb-6">{{ player.name }}</div>
-            <v-btn-toggle v-model="player.score2" divided>
-              <v-btn v-for="score in [0, 1, 2, 3, 4]" :value="score" color="green">{{ score }}</v-btn>
-            </v-btn-toggle>
+            <v-item-group v-model="player.score2" >
+              <v-item v-for="(n, index) in 5" :key="index">
+                <template v-slot:default="{ toggle }">
+                  <v-btn
+                    size="60px"
+                    :active="player.score2 != null && player.score2 >= index"
+                    :color="player.score2 != null && player.score2 >= index ? 'green' : ''"
+                    :icon="`mdi-numeric-${index}`"
+                    border
+                    @click="toggle"
+                    class="text-h4 button-score"
+                    :class="[{'left-border': index === 0}, {'right-border': index === 4}]"
+                  ></v-btn>
+                </template>
+              </v-item>
+            </v-item-group>
           </v-card-title>
         </v-card>
       </v-col>
@@ -51,10 +64,21 @@ watch(players, (newPlayers: Player[]) => {
 <style scoped>
 
 .player-avatar {
-  font-size: 100px;
+  font-size: 80px;
 }
 
 .themes {
   display: inline-block;
+}
+
+.button-score {
+  border-radius: 0;
+}
+
+.left-border {
+  border-radius: 8px 0 0 8px;
+}
+.right-border {
+  border-radius: 0 8px 8px 0;
 }
 </style>

@@ -69,7 +69,7 @@
       ]
     },
     {
-      "name": "Records météorologique",
+      "name": "Records météo",
       "questions": [
         {
           "question": "Quelle est le record de température en France ?",
@@ -132,7 +132,7 @@
       "questions": []
     },
     {
-      "name": "Philosophie allemande",
+      "name": "Philo allemande",
       "questions": []
     },
     {

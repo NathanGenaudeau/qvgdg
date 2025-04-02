@@ -23,18 +23,18 @@ watch(players, (newPlayers: Player[]) => {
   <v-container>
     <v-row>
       <v-col v-for="(player, index) in players.filter((player: Player) => player.isVisible)" :key="index">
-        <v-card class="pa-4" @click="currentPlayer = player" :class="currentPlayer === player ? 'selected-player' : ''">
+        <v-card class="py-4" @click="currentPlayer = player" :class="currentPlayer === player ? 'selected-player' : ''" rounded="xl">
           <v-avatar class="player-avatar" size="xx-large" :icon="`mdi-alpha-${player.name.charAt(0).toLowerCase()}-circle`" :color="colors[index]"/>
           <v-card-title>
             <div class="text-h4 font-weight-bold pt-1 pb-6">{{ player.name }}</div>
-            <v-chip size="x-large" color="indigo-darken-3" variant="flat" class="text-h4 font-weight-bold">Score : {{ player.score }}</v-chip>
+            <v-chip size="x-large" color="indigo-darken-3" variant="flat" class="text-h4 font-weight-bold score">Score : {{ player.score }}</v-chip>
           </v-card-title>
         </v-card>
       </v-col>
     </v-row>
 
-    <v-row class="scores mt-16">
-        <v-btn size="x-large" color="#978a30" v-for="score in [1, 2, 3, 4, 5]" :key="score" @click="addScore(score)" class="mx-4">+{{ score }}</v-btn>
+    <v-row class="scores-buttons mt-16">
+        <v-btn size="x-large" rounded="lg" color="#978a30" v-for="score in 5" :key="score" @click="addScore(score)" class="mx-4">+{{ score }}</v-btn>
     </v-row>    
   </v-container>
 </template>
@@ -42,14 +42,19 @@ watch(players, (newPlayers: Player[]) => {
 <style scoped>
 
 .player-avatar {
-  font-size: 100px;
+  font-size: 80px;
 }
 
 .selected-player {
-  border: 3px solid #303D97;
+  background-color: rgb(48, 61, 151, 0.7);
 }
 
-.scores {
+.score {
+  padding: 30px;
+  border: 1px solid white;
+}
+
+.scores-buttons {
   display: flex;
   justify-content: center;
 }
