@@ -189,7 +189,6 @@ watch(players, (newPlayers: Player[]) => {
 
 .score {
   padding: 30px;
-  border: 1px solid white;
 }
 
 

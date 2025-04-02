@@ -5,7 +5,8 @@ export class Player {
   theme1: Theme[];
   theme2: Theme[];
   score: number;
-  score2: number;
+  scoreSemiFinal: number;
+  scoreFinal: number;
   isVisible: boolean;
   isEditing: boolean;
 
@@ -14,7 +15,8 @@ export class Player {
     this.theme1 = [];
     this.theme2 = [];
     this.score = 0;
-    this.score2 = 0;
+    this.scoreSemiFinal = 0;
+    this.scoreFinal = 0;
     this.isVisible = true;
     this.isEditing = false;
   }

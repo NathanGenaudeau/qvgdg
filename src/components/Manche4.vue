@@ -28,17 +28,17 @@ watch(players, (newPlayers: Player[]) => {
           <v-avatar class="player-avatar" size="xx-large" :icon="`mdi-alpha-${player.name.charAt(0).toLowerCase()}-circle`" :color="colors[index]"/>
           <v-card-title>
             <div class="text-h4 font-weight-bold pt-1 pb-6">{{ player.name }}</div>
-            <v-item-group v-model="player.score2" >
+            <v-item-group v-model="player.scoreSemiFinal" >
               <v-item v-for="(n, index) in 5" :key="index">
                 <template v-slot:default="{ toggle }">
                   <v-btn
                     size="60px"
-                    :active="player.score2 != null && player.score2 >= index"
-                    :color="player.score2 != null && player.score2 >= index ? 'green' : ''"
+                    :active="player.scoreSemiFinal != null && player.scoreSemiFinal >= index"
+                    :color="player.scoreSemiFinal != null && player.scoreSemiFinal >= index ? 'green' : ''"
                     :icon="`mdi-numeric-${index}`"
                     border
                     @click="toggle"
-                    class="text-h4 button-score"
+                    class="text-h5 button-score"
                     :class="[{'left-border': index === 0}, {'right-border': index === 4}]"
                   ></v-btn>
                 </template>
