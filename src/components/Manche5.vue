@@ -7,7 +7,7 @@ const numbers = ref([4, 3, 2, 1]);
 const progress = ref([100, 100, 100, 100]);
 const positions = ref<{ [key: number]: 'left' | 'right' }>({ 4: 'left', 3: 'right', 2: 'left', 1: 'right' });
 let activeIndex = 0;
-let timer: NodeJS.Timeout | null = null;
+let timer: ReturnType<typeof setInterval> | null = null;
 
 const players = ref<Player[]>(localStorage.getItem('players') ? JSON.parse(localStorage.getItem('players')!).filter((p: Player) => p.isVisible) : []);
 const activePlayer = ref<Player>(players.value[0]);
@@ -16,7 +16,7 @@ const colors = ref<string[]>(['red-darken-4', 'light-blue', 'green', 'yellow-dar
 
 const toggleTimer = () => {
   if (isRunning.value) {
-    clearInterval(timer);
+    if (timer !== null) clearInterval(timer);
     timer = null;
   } else {
     timer = setInterval(() => {
@@ -26,7 +26,7 @@ const toggleTimer = () => {
       } else if (activeIndex < numbers.value.length - 1) {
         activeIndex++;
       } else {
-        clearInterval(timer);
+        if (timer !== null) clearInterval(timer);
         isRunning.value = false;
       }
     }, 75); // 75 = 7.5s
@@ -40,7 +40,7 @@ const resetTimer = () => {
     activeIndex = activeIndex - 1;
   }
   activeIndex = 0;
-  clearInterval(timer);
+  if (timer !== null) clearInterval(timer);
   isRunning.value = false;
 }
 
@@ -67,6 +67,17 @@ watch(players, (newPlayers: Player[]) => {
   localStorage.setItem('players', JSON.stringify(newPlayers));
 }, { deep: true });
 
+window.addEventListener('keydown', (event) => {
+  if (event.code === 'Space') {
+    event.preventDefault();
+    toggleTimer();
+  }
+  if (event.code === 'Enter') {
+    event.preventDefault();
+    addScore(activePlayer.value);
+    resetTimer();
+  }
+});
 
 watch(positions, () => {
   activePlayer.value = positions.value[numbers.value[activeIndex]] === 'left' ? players.value[0] : players.value[1];
@@ -78,7 +89,7 @@ watch(positions, () => {
   <v-container class="text-center">
     <v-row>
       <v-col cols="3">
-        <v-card class="py-4" rounded="xl" :class="{active: activePlayer === players[0]}">
+        <v-card class="py-4" rounded="xl" :class="{active: activePlayer === players[0] && isRunning}">
           <v-avatar class="player-avatar" size="xx-large" :icon="`mdi-alpha-${players[0].name.charAt(0).toLowerCase()}-circle`" :color="colors[0]"/>
           <v-card-title class="d-flex flex-column align-center">
             <div class="text-h4 font-weight-bold pt-1 pb-6">{{ players[0].name }}</div>
@@ -89,9 +100,11 @@ watch(positions, () => {
       </v-col>
       <v-col cols="6">
         <v-row justify="center" class="align-center flex-column">
-          <div v-for="(num, index) in numbers" :key="num" :class="['hexagon', getPositionClass(num), 'my-1']"
-            :style="{ background: `linear-gradient(to top, rgb(255, 165, 0) ${progress[index]}%, rgb(128, 128, 128) ${progress[index]}%)` }">
-            {{ num }}
+          <div v-for="(num, index) in numbers" :key="num" :class="['hexagon-wrapper', getPositionClass(num), 'my-2']">
+            <div class="hexagon-border" :class="{'hexagon-active': numbers[activeIndex] === num}" ></div> 
+            <div class="hexagon" :style="{ background: `linear-gradient(to top, rgb(255, 165, 0) ${progress[index]}%, rgb(128, 128, 128) ${progress[index]}%)` }">
+              {{ num }}
+            </div>
           </div>
         </v-row>
 
@@ -104,7 +117,7 @@ watch(positions, () => {
 
       </v-col>
       <v-col cols="3">
-        <v-card class="py-4" rounded="xl" :class="{active: activePlayer === players[1]}">
+        <v-card class="py-4" rounded="xl" :class="{active: activePlayer === players[1] && isRunning}">
           <v-avatar class="player-avatar" size="xx-large" :icon="`mdi-alpha-${players[1].name.charAt(0).toLowerCase()}-circle`" :color="colors[1]"/>
           <v-card-title class="d-flex flex-column align-center">
             <div class="text-h4 font-weight-bold pt-1 pb-6">{{ players[1].name }}</div>
@@ -119,18 +132,41 @@ watch(positions, () => {
 </template>
 
 <style scoped>
-.hexagon {
+.hexagon-wrapper {
+  position: relative;
   width: 150px;
   aspect-ratio: 1 / 0.8;
-  background-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hexagon-border {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: white;
+  clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+  transform: scale(1.1);
+  z-index: 0;
+}
+
+.hexagon {
+  position: relative;
+  width: 100%;
+  height: 100%;
   clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 72px;
   font-weight: bold;
-  position: relative;
-  overflow: hidden;
+  color: white;
+  z-index: 1;
+}
+
+.hexagon-active {
+  background-color: lightgreen;
 }
 
 .hex-left {

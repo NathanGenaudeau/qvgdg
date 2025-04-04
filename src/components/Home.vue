@@ -6,6 +6,13 @@ const openNavigationDrawer = () => {
   emit('openNavigationDrawer');
 };
 
+window.addEventListener('keydown', (event) => {
+  if (event.code === 'Enter') {
+    event.preventDefault();
+    openNavigationDrawer();
+  }
+});
+
 </script>
 
 <template>

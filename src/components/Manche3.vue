@@ -89,7 +89,7 @@ watch(players, (newPlayers: Player[]) => {
     <v-row>
       <v-col v-for="(player, index) in players.filter((player: Player) => player.isVisible)" :key="index" cols="3">
         <v-card class="pa-4" rounded="xl">
-          <v-avatar class="player-avatar" size="xx-large" :icon="`mdi-alpha-${player.name.charAt(0).toLowerCase()}-circle`" :color="colors[index]"/>
+          <v-avatar class="player-avatar-1" size="xx-large" :icon="`mdi-alpha-${player.name.charAt(0).toLowerCase()}-circle`" :color="colors[index]"/>
           <v-card-title>
             <div class="text-h4 font-weight-bold pt-1 pb-6">{{ player.name }}</div>
             <v-chip size="x-large" color="indigo-darken-3" variant="flat" class="text-h4 font-weight-bold score">Score : {{ player.score }}</v-chip>
@@ -166,7 +166,10 @@ watch(players, (newPlayers: Player[]) => {
   </v-dialog>
 </template>
 
-<style scoped>
+<style>
+button.v-chip__close {
+  padding: 0!important;
+}
 .theme-drop-zone {
   display: flex;
   justify-content: center;
@@ -183,14 +186,13 @@ watch(players, (newPlayers: Player[]) => {
   gap: 10px;
 }
 
-.player-avatar {
+.player-avatar-1 {
   font-size: 80px;
 }
 
 .score {
   padding: 30px;
 }
-
 
 .theme {
   cursor: pointer;
@@ -218,10 +220,10 @@ watch(players, (newPlayers: Player[]) => {
 }
 
 .answer-btn {
-  width: 400px;
-  height: 150px;
-  font-size: 1.5rem;
-  font-weight: bold;
+  width: 400px!important;
+  height: 150px!important;
+  font-size: 1.5rem!important;
+  font-weight: bold!important;
 }
 
 .good {

@@ -69,7 +69,7 @@
       ]
     },
     {
-      "name": "Records météo",
+      "name": "Records",
       "questions": [
         {
           "question": "Quelle est le record de température en France ?",

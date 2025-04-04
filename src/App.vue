@@ -98,7 +98,7 @@ watch(players, (newPlayers) => {
           </v-col>
         </v-list>
         <v-col>
-          <v-text-field label="Nom du joueur" v-model="newPlayer"></v-text-field>
+          <v-text-field label="Nom du joueur" v-model="newPlayer" @keydown.enter="addPlayer"></v-text-field>
           <v-btn @click="addPlayer" color="#978a30" class="mt-2">Ajouter</v-btn>
         </v-col>
       </v-navigation-drawer>
