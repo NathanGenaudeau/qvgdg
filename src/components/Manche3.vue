@@ -12,7 +12,7 @@ const emit = defineEmits(['openNavigationDrawer']);
 const players = ref<Player[]>(localStorage.getItem('players') ? JSON.parse(localStorage.getItem('players')!) : []);
 const themes = ref<Theme[]>(Themes.themes.filter(t => !players.value.flatMap((p) => [...p.theme1, ...p.theme2]).some(theme => theme.name === t.name)));
 
-const colors = ref<string[]>(['red-darken-4', 'light-blue', 'green', 'yellow-darken-4'].sort(() => Math.random() - 0.5));
+const colors = ref<string[]>(['red-darken-4', 'light-blue', 'green', 'yellow-darken-4']);
 
 const dialog = ref(false);
 const currentTheme = ref<Theme | null>(null);
@@ -70,7 +70,7 @@ const nextQuestion = () => {
     btn.classList.remove('bad');
   });
 
-  if (currentTheme.value && currentPlayer.value?.score && currentQuestion.value === currentTheme.value.questions.length) {
+  if (currentPlayer.value?.score !== undefined && currentQuestion.value === currentTheme.value?.questions.length) {
     currentQuestion.value = 0;
     dialog.value = false;
     const index = players.value.findIndex(p => p === currentPlayer.value);
@@ -149,8 +149,16 @@ watch(players, (newPlayers: Player[]) => {
                   :key="index" 
                   cols="6" 
                   class="d-flex justify-center">
-              <v-btn class="answer-btn" :class="{good: answer.isCorrect && selectedAnswer?.text === answer.text, bad: !answer.isCorrect && selectedAnswer?.text === answer.text}" variant="outlined" @click="verifyAnswer(answer)">
-                {{ answer.text }}
+              <v-btn class="answer-btn" 
+                :class="[
+                  {
+                    good: answer.isCorrect && selectedAnswer?.text === answer.text,
+                    bad: !answer.isCorrect && selectedAnswer?.text === answer.text
+                  }
+                ]"
+                variant="outlined" @click="verifyAnswer(answer)"
+              >
+                <span class="answer-text">{{ answer.text }}</span>
               </v-btn>
             </v-col>
           </v-row>
@@ -220,10 +228,14 @@ button.v-chip__close {
 }
 
 .answer-btn {
-  width: 400px!important;
-  height: 150px!important;
-  font-size: 1.5rem!important;
-  font-weight: bold!important;
+  width: 400px !important;
+  height: 150px !important;
+}
+
+.answer-text {
+  white-space: normal;
+  line-height: 1.2;
+  font-size: clamp(1rem, 1.5vw, 2rem);
 }
 
 .good {

@@ -12,7 +12,7 @@ let timer: ReturnType<typeof setInterval> | null = null;
 const players = ref<Player[]>(localStorage.getItem('players') ? JSON.parse(localStorage.getItem('players')!).filter((p: Player) => p.isVisible) : []);
 const activePlayer = ref<Player>(players.value[0]);
 
-const colors = ref<string[]>(['red-darken-4', 'light-blue', 'green', 'yellow-darken-4', 'deep-purple-darken-2'].sort(() => Math.random() - 0.5));
+const colors = ref<string[]>(['red-darken-4', 'light-blue', 'green', 'yellow-darken-4', 'deep-purple-darken-2']);
 
 const toggleTimer = () => {
   if (isRunning.value) {
@@ -20,16 +20,17 @@ const toggleTimer = () => {
     timer = null;
   } else {
     timer = setInterval(() => {
+      console.log(progress.value[activeIndex]);
       activePlayer.value = positions.value[numbers.value[activeIndex]] === 'left' ? players.value[0] : players.value[1];
       if (progress.value[activeIndex] > 0) {
-        progress.value[activeIndex] -= 1;
+        progress.value[activeIndex] -= 0.1;
       } else if (activeIndex < numbers.value.length - 1) {
         activeIndex++;
       } else {
         if (timer !== null) clearInterval(timer);
         isRunning.value = false;
       }
-    }, 75); // 75 = 7.5s
+    }, 7.5); // 75 = 7.5s
   }
   isRunning.value = !isRunning.value;
 };
@@ -186,7 +187,8 @@ watch(positions, () => {
 }
 
 .active {
-  border: 2px solid green;
+  border: 3px solid green;
+  background-color: rgba(0, 255, 0, 0.1);
   animation: blink-border 2s infinite;
 }
 

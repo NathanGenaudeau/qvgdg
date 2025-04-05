@@ -5,7 +5,7 @@ import { Player } from '../types/Player';
 
 const players = ref<Player[]>(localStorage.getItem('players') ? JSON.parse(localStorage.getItem('players')!) : []);
 
-const colors = ref<string[]>(['red-darken-4', 'light-blue', 'green', 'yellow-darken-4', 'deep-purple-darken-2'].sort(() => Math.random() - 0.5));
+const colors = ref<string[]>(['red-darken-4', 'light-blue', 'green', 'yellow-darken-4', 'deep-purple-darken-2']);
 
 const themes = ref<string[]>(['theme 1', 'theme 2', 'theme 3', 'theme 4']);
 const disabledButtons = ref<number[]>([]);

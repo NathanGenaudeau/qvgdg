@@ -19,7 +19,7 @@
               "isCorrect": false
             },
             {
-              "text": "Madrid",
+              "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
               "isCorrect": false
             }
           ]
@@ -75,7 +75,7 @@
           "question": "Quelle est le record de température en France ?",
           "answers": [
             {
-              "text": "44°C",
+              "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
               "isCorrect": false
             },
             {

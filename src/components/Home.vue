@@ -5,19 +5,11 @@ const emit = defineEmits(['openNavigationDrawer']);
 const openNavigationDrawer = () => {
   emit('openNavigationDrawer');
 };
-
-window.addEventListener('keydown', (event) => {
-  if (event.code === 'Enter') {
-    event.preventDefault();
-    openNavigationDrawer();
-  }
-});
-
 </script>
 
 <template>
   <h1>Le Quiz Des Champi(gn)ons</h1>
   <v-btn @click="openNavigationDrawer" size="x-large" color="#303D97" class="mt-8">Configurez les participants</v-btn>
   <br/>
-  <v-btn @click="$router.push('manche1')" size="x-large" color="#978a30" class="mt-4">Commencer</v-btn>
+  <v-btn @click="$router.push('manche1-2')" size="x-large" color="#978a30" class="mt-4">Commencer</v-btn>
 </template>
