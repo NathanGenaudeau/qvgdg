@@ -56,10 +56,10 @@ watch(players, (newPlayers) => {
     <v-app-bar>
       <template v-slot:prepend>
         <v-btn icon="mdi mdi-home" @click="router.push('/')" />
-        <v-btn @click="router.push({ name: 'Manche 1' })">Manches 1 & 2</v-btn>
-        <v-btn @click="router.push({ name: 'Sabotage' })">Sabotage</v-btn>
-        <v-btn @click="router.push({ name: '4 à la suite' })">4 à la suite</v-btn>
-        <v-btn @click="router.push({ name: 'Finale' })">Finale</v-btn>
+        <v-btn @click="router.push({ name: 'Manche 1' })">La poêlée & Le panier garni</v-btn>
+        <v-btn @click="router.push({ name: 'Sabotage' })">La cueillette surprise</v-btn>
+        <v-btn @click="router.push({ name: '4 à la suite' })">Le Quadri-Cèpes</v-btn>
+        <v-btn @click="router.push({ name: 'Finale' })">Le duel des chefs</v-btn>
       </template>
       <template v-slot:append>
         <v-btn icon="mdi-cog" @click.stop="drawer = !drawer" />
