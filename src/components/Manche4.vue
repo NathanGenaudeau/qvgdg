@@ -8,11 +8,12 @@ const players = ref<Player[]>(localStorage.getItem('players') ? JSON.parse(local
 const colors = ref<string[]>(['red-darken-4', 'light-blue', 'green', 'yellow-darken-4', 'deep-purple-darken-2']);
 
 const themes = ref<string[]>(['theme 1', 'theme 2', 'theme 3', 'theme 4']);
+const chosenButtons = ref<number[]>([]);
 const disabledButtons = ref<number[]>([]);
 
 const choseTheme = (index: number) => {
-
-  disabledButtons.value.push(index);
+  if (chosenButtons.value.includes(index)) disabledButtons.value.push(index);
+  else chosenButtons.value.push(index);
 };
 
 watch(players, (newPlayers: Player[]) => {
@@ -29,12 +30,12 @@ watch(players, (newPlayers: Player[]) => {
           <v-card-title>
             <div class="text-h4 font-weight-bold pt-1 pb-6">{{ player.name }}</div>
             <v-item-group v-model="player.scoreSemiFinal" >
-              <v-item v-for="(n, index) in 5" :key="index">
+              <v-item v-for="(_, index) in 5" :key="index">
                 <template v-slot:default="{ toggle }">
                   <v-btn
                     size="60px"
-                    :active="player.scoreSemiFinal != null && player.scoreSemiFinal >= index"
-                    :color="player.scoreSemiFinal != null && player.scoreSemiFinal >= index ? 'green' : ''"
+                    :active="player.scoreSemiFinal !== null && player.scoreSemiFinal >= index"
+                    :color="player.scoreSemiFinal !== null && player.scoreSemiFinal >= index ? 'green' : ''"
                     :icon="`mdi-numeric-${index}`"
                     border
                     @click="toggle"
@@ -50,12 +51,13 @@ watch(players, (newPlayers: Player[]) => {
     </v-row>
 
     <v-row class="themes mt-16">
-      <v-btn v-for="(theme, index) in themes" :key="index" 
+      <v-btn v-for="(theme, index) in themes" :key="index"
+        :color="chosenButtons.includes(index) ? 'green' : ''"
         @click="choseTheme(index)"
         :disabled="disabledButtons.includes(index)"
         size="x-large" variant="outlined" class="mx-4"
       >
-        {{ index !== 3 ? theme : 'Thème mystère' }}
+        {{ index !== 3 || index === 3 && chosenButtons.includes(index) ? theme : 'Thème mystère' }}
       </v-btn>
     </v-row>   
   </v-container>

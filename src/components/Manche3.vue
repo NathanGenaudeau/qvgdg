@@ -79,6 +79,16 @@ const nextQuestion = () => {
   }
 };
 
+const getFontSize = (text: any) => {
+  const baseSize = 1.5;
+  const length = text.length;
+  const minSize = 0.8;
+  const maxLength = 200;
+
+  const size = Math.max(minSize, baseSize - (length / maxLength));
+  return `font-size: ${size}rem`;
+}
+
 watch(players, (newPlayers: Player[]) => {
   localStorage.setItem('players', JSON.stringify(newPlayers));
 }, { deep: true });
@@ -158,7 +168,7 @@ watch(players, (newPlayers: Player[]) => {
                 ]"
                 variant="outlined" @click="verifyAnswer(answer)"
               >
-                <span class="answer-text">{{ answer.text }}</span>
+                <span class="answer-text" :style="getFontSize(answer.text)">{{ answer.text }}</span>
               </v-btn>
             </v-col>
           </v-row>
@@ -235,7 +245,7 @@ button.v-chip__close {
 .answer-text {
   white-space: normal;
   line-height: 1.2;
-  font-size: clamp(1rem, 1.5vw, 2rem);
+  font-weight: bold;
 }
 
 .good {

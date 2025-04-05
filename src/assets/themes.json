@@ -7,15 +7,15 @@
           "question": "Quelle est la capitale de la France ?",
           "answers": [
             {
-              "text": "Paris",
+              "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
               "isCorrect": true
             },
             {
-              "text": "Londres",
+              "text": "Lorem ipsum dolor sit amet.",
               "isCorrect": false
             },
             {
-              "text": "Berlin",
+              "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
               "isCorrect": false
             },
             {
