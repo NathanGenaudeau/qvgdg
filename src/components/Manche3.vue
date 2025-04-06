@@ -89,6 +89,12 @@ const getFontSize = (text: any) => {
   return `font-size: ${size}rem`;
 }
 
+const isVisible = (player: Player) => {
+  const index = players.value.findIndex(p => p === player);
+  players.value[index].isVisible = !players.value[index].isVisible;
+  localStorage.setItem('players', JSON.stringify(players.value));
+};
+
 watch(players, (newPlayers: Player[]) => {
   localStorage.setItem('players', JSON.stringify(newPlayers));
 }, { deep: true });
@@ -99,6 +105,9 @@ watch(players, (newPlayers: Player[]) => {
     <v-row>
       <v-col v-for="(player, index) in players.filter((player: Player) => player.isVisible)" :key="index" cols="3">
         <v-card class="pa-4" rounded="xl">
+          <template v-slot:append>
+            <v-icon :icon="player.isVisible ? 'mdi-eye' : 'mdi-eye-off'" :color="player.isVisible ? 'white' : 'red'" @click="isVisible(player)"/>
+          </template>
           <v-avatar class="player-avatar-1" size="xx-large" :icon="`mdi-alpha-${player.name.charAt(0).toLowerCase()}-circle`" :color="colors[index]"/>
           <v-card-title>
             <div class="text-h4 font-weight-bold pt-1 pb-6">{{ player.name }}</div>
